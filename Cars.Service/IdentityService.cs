@@ -1,11 +1,11 @@
 ﻿using Cars.Data.Helpers;
-using Cars.Data.Models;
 using Cars.Service.Helpers;
 using Cars.Service.Interfaces;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System;
+using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
@@ -17,14 +17,17 @@ namespace Cars.Service
     public class IdentityService : IIdentityService
     {
 
-        private readonly UserManager<User> _userManager;
+        private readonly UserManager<IdentityUser> _userManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
         private readonly JwtSettings _jwtSettings;
 
-        public IdentityService(UserManager<User> userManager, JwtSettings jwtSettings)
+        public IdentityService(UserManager<IdentityUser> userManager, RoleManager<IdentityRole> roleManager, JwtSettings jwtSettings)
         {
             _userManager = userManager;
             _jwtSettings = jwtSettings;
-           
+            _roleManager = roleManager;
+
+
         }
 
         public async Task<AuthenticationResult> RegisterAsync(string email, string password)
@@ -41,8 +44,10 @@ namespace Cars.Service
             }
 
 
-            var newUser = new User
+            var newUserId = Guid.NewGuid();
+            var newUser = new IdentityUser
             {
+                Id = newUserId.ToString(),
                 Email = email,
                 UserName = email
             };
@@ -59,18 +64,41 @@ namespace Cars.Service
 
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(_jwtSettings.Secret);
+
+            var claims = new List<Claim>
+            {
+                new Claim(type: JwtRegisteredClaimNames.Sub, value: newUser.Email),
+                new Claim(type: JwtRegisteredClaimNames.Jti, value: Guid.NewGuid().ToString()),
+                new Claim(type: JwtRegisteredClaimNames.Email, value: newUser.Email),
+                new Claim(type: "id", value: newUser.Id)
+            };
+
+            var userClaims = await _userManager.GetClaimsAsync(newUser);
+            claims.AddRange(userClaims);
+
+            var userRoles = await _userManager.GetRolesAsync(newUser);
+            foreach (var userRole in userRoles)
+            {
+                claims.Add(new Claim(ClaimTypes.Role, userRole));
+                var role = await _roleManager.FindByNameAsync(userRole);
+                if (role == null) continue;
+                var roleClaims = await _roleManager.GetClaimsAsync(role);
+
+                foreach (var roleClaim in roleClaims)
+                {
+                    if (claims.Contains(roleClaim))
+                        continue;
+
+                    claims.Add(roleClaim);
+                }
+            }
+
             var tokenDescriptor = new SecurityTokenDescriptor
             {
-                Subject = new ClaimsIdentity(claims: new[]
-                {
-                    new Claim(type: JwtRegisteredClaimNames.Sub, value: newUser.Email),
-                    new Claim(type: JwtRegisteredClaimNames.Jti, value: Guid.NewGuid().ToString()),
-                    new Claim(type: JwtRegisteredClaimNames.Email, value: newUser.Email),
-                    new Claim(type: "id", value: newUser.Id)
-                }),
-                Expires = DateTime.UtcNow.AddHours(24),
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), algorithm: SecurityAlgorithms.HmacSha256Signature)
-
+                Subject = new ClaimsIdentity(claims),
+                Expires = DateTime.UtcNow.AddHours(2),
+                SigningCredentials =
+                    new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };
 
             var token = tokenHandler.CreateToken(tokenDescriptor);
@@ -95,7 +123,6 @@ namespace Cars.Service
                 };
             }
 
-            var userRoles = await _userManager.GetRolesAsync(user);
             var userHasValidPassword = await _userManager.CheckPasswordAsync(user, password);
             
 
@@ -110,18 +137,41 @@ namespace Cars.Service
 
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(_jwtSettings.Secret);
+
+            var claims = new List<Claim>
+            {
+                new Claim(type: JwtRegisteredClaimNames.Sub, value: user.Email),
+                new Claim(type: JwtRegisteredClaimNames.Jti, value: Guid.NewGuid().ToString()),
+                new Claim(type: JwtRegisteredClaimNames.Email, value: user.Email),
+                new Claim(type: "id", value: user.Id)
+            };
+
+            var userClaims = await _userManager.GetClaimsAsync(user);
+            claims.AddRange(userClaims);
+
+            var userRoles = await _userManager.GetRolesAsync(user);
+            foreach (var userRole in userRoles)
+            {
+                claims.Add(new Claim(ClaimTypes.Role, userRole));
+                var role = await _roleManager.FindByNameAsync(userRole);
+                if (role == null) continue;
+                var roleClaims = await _roleManager.GetClaimsAsync(role);
+
+                foreach (var roleClaim in roleClaims)
+                {
+                    if (claims.Contains(roleClaim))
+                        continue;
+
+                    claims.Add(roleClaim);
+                }
+            }
+
             var tokenDescriptor = new SecurityTokenDescriptor
             {
-                Subject = new ClaimsIdentity(claims: new[]
-                {
-                    new Claim(type: JwtRegisteredClaimNames.Sub, value: user.Email),
-                    new Claim(type: JwtRegisteredClaimNames.Jti, value: Guid.NewGuid().ToString()),
-                    new Claim(type: JwtRegisteredClaimNames.Email, value: user.Email),
-                    new Claim(type: "id", value: user.Id)
-                }),
-                Expires = DateTime.UtcNow.AddHours(4),
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), algorithm: SecurityAlgorithms.HmacSha256Signature)
-
+                Subject = new ClaimsIdentity(claims),
+                Expires = DateTime.UtcNow.AddHours(2),
+                SigningCredentials =
+                    new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };
 
             var token = tokenHandler.CreateToken(tokenDescriptor);
@@ -133,5 +183,5 @@ namespace Cars.Service
                 Token = tokenHandler.WriteToken(token)
             };
         }
-    }
+    }    
 }

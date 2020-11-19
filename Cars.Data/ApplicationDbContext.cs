@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace Cars.Data
 {
-    public class ApplicationDbContext : IdentityDbContext<User>, IApplicationDbContext
+    public class ApplicationDbContext : IdentityDbContext<IdentityUser>, IApplicationDbContext
     {
         public ApplicationDbContext(DbContextOptions options) : base(options)
         {
