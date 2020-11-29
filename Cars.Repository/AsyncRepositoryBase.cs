@@ -1,6 +1,5 @@
-﻿using Cars.Data;
-using Cars.Data.Interfaces;
-using Cars.Repository.Interfaces;
+﻿using Cars.DAL.Abstract;
+using Cars.Repository.Common;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Threading.Tasks;

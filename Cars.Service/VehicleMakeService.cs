@@ -1,7 +1,7 @@
-﻿using Cars.Data.Models;
-using Cars.Repository.Helpers;
-using Cars.Repository.Interfaces;
-using Cars.Service.Interfaces;
+﻿using Cars.Common;
+using Cars.DAL.Entities;
+using Cars.Repository.Common;
+using Cars.Service.Common;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -18,7 +18,7 @@ namespace Cars.Service
         }
 
 
-        public async Task<VehicleMake> CreateAsync(VehicleMake vehicleMake)
+        public async Task<IVehicleMakeEntity> CreateAsync(IVehicleMakeEntity vehicleMake)
         {
             await _unitOfWork.VehicleMake.Create(vehicleMake);
             await _unitOfWork.CommitAsync();
@@ -27,7 +27,7 @@ namespace Cars.Service
 
         }
 
-        public async Task<VehicleMake> DeleteAsync(int id)
+        public async Task<IVehicleMakeEntity> DeleteAsync(int id)
         {
             var make = await _unitOfWork.VehicleMake.FindById(id);
 
@@ -36,19 +36,19 @@ namespace Cars.Service
             return make;
         }
 
-        public async Task<IList<VehicleMake>> FindAllMakesPaged(ISortingParameters sortingParams, IFilteringParameters filteringParams, IPagingParameters pagingParams)
+        public async Task<IList<IVehicleMakeEntity>> FindAllMakesPaged(ISortingParameters sortingParams, IFilteringParameters filteringParams, IPagingParameters pagingParams)
         {
 
             return await _unitOfWork.VehicleMake.FindAllMakesPaged(sortingParams, filteringParams, pagingParams);
 
         }
 
-        public async Task<VehicleMake> FindVehicleMakeById(int id)
+        public async Task<IVehicleMakeEntity> FindVehicleMakeById(int id)
         {
             return await _unitOfWork.VehicleMake.FindById(id);
         }
 
-        public async Task<VehicleMake> UpdateAsync(int id, VehicleMake vehicleMake)
+        public async Task<IVehicleMakeEntity> UpdateAsync(int id, IVehicleMakeEntity vehicleMake)
         {
             var vehicleMakeToUpdate = await _unitOfWork.VehicleMake.FindById(id);
 

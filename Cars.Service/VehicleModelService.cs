@@ -1,7 +1,7 @@
-﻿using Cars.Data.Models;
-using Cars.Repository.Helpers;
-using Cars.Repository.Interfaces;
-using Cars.Service.Interfaces;
+﻿using Cars.Common;
+using Cars.DAL.Entities;
+using Cars.Repository.Common;
+using Cars.Service.Common;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -19,7 +19,7 @@ namespace Cars.Service
 
         }
 
-        public async Task<VehicleModel> CreateAsync(VehicleModel vehicleModel)
+        public async Task<IVehicleModelEntity> CreateAsync(IVehicleModelEntity vehicleModel)
         {
             await _unitOfWork.VehicleModel.Create(vehicleModel);
             await _unitOfWork.CommitAsync();
@@ -28,7 +28,7 @@ namespace Cars.Service
 
         }
 
-        public async Task<VehicleModel> DeleteAsync(int id)
+        public async Task<IVehicleModelEntity> DeleteAsync(int id)
         {
             var model = await _unitOfWork.VehicleModel.FindById(id);
 
@@ -37,7 +37,7 @@ namespace Cars.Service
             return model;
         }
 
-        public async Task<IList<VehicleModel>> FindAllModelsPaged(ISortingParameters sortingParams, IFilteringParameters filteringParams, IPagingParameters pagingParams)
+        public async Task<IList<IVehicleModelEntity>> FindAllModelsPaged(ISortingParameters sortingParams, IFilteringParameters filteringParams, IPagingParameters pagingParams)
         {
 
             return await _unitOfWork.VehicleModel.FindAllModelsPaged(sortingParams, filteringParams, pagingParams);
@@ -46,12 +46,12 @@ namespace Cars.Service
 
 
 
-        public async Task<VehicleModel> FindVehicleModelById(int id)
+        public async Task<IVehicleModelEntity> FindVehicleModelById(int id)
         {
             return await _unitOfWork.VehicleModel.FindByIdWithMake(id);
         }
 
-        public async Task<VehicleModel> UpdateAsync(int id, VehicleModel vehicleModel)
+        public async Task<IVehicleModelEntity> UpdateAsync(int id, IVehicleModelEntity vehicleModel)
         {
             var vehicleModelToUpdate = await _unitOfWork.VehicleModel.FindById(id);
 

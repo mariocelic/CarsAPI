@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
-using Cars.Data.Interfaces;
-using Cars.Data.Models;
-using Cars.Repository.Helpers;
-using Cars.Repository.Interfaces;
+using Cars.Common;
+using Cars.DAL.Abstract;
+using Cars.DAL.Entities;
+using Cars.Repository.Common;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Cars.Repository
 {
-    public class VehicleModelRepository : AsyncRepositoryBase<VehicleModel>, IVehicleModelRepository
+    public class VehicleModelRepository : AsyncRepositoryBase<IVehicleModelEntity>, IVehicleModelRepository
     {
         private readonly IMapper _mapper;
 
@@ -22,25 +22,25 @@ namespace Cars.Repository
         }
 
 
-        public IQueryable<VehicleModel> FindAllWithMake()
+        public IQueryable<IVehicleModelEntity> FindAllWithMake()
         {
-            return _context.Set<VehicleModel>()
+            return _context.Set<IVehicleModelEntity>()
                .AsNoTracking()
                .Include(q => q.VehicleMake);
         }
 
-        public async Task<VehicleModel> FindByIdWithMake(int id)
+        public async Task<IVehicleModelEntity> FindByIdWithMake(int id)
         {
-            return await _context.Set<VehicleModel>()
+            return await _context.Set<IVehicleModelEntity>()
                 .AsNoTracking()
                 .Include(q => q.VehicleMake)
                 .FirstOrDefaultAsync(q => q.ModelId == id);
 
         }
 
-        public async Task<IList<VehicleModel>> FindAllModelsPaged(ISortingParameters sortingParams, IFilteringParameters filteringParams, IPagingParameters pagingParams)
+        public async Task<IList<IVehicleModelEntity>> FindAllModelsPaged(ISortingParameters sortingParams, IFilteringParameters filteringParams, IPagingParameters pagingParams)
         {
-            IQueryable<VehicleModel> vehicleModels;
+            IQueryable<IVehicleModelEntity> vehicleModels;
 
             // Filtering
             using (_context)
@@ -76,7 +76,7 @@ namespace Cars.Repository
                             break;
                     }
 
-                    return _mapper.Map<IList<VehicleModel>>(await PaginationList<VehicleModel>.CreateAsync(vehicleModels, pagingParams.PageNumber ?? 1, pagingParams.PageSize ?? 5)).ToList();
+                    return _mapper.Map<IList<IVehicleModelEntity>>(await PaginationList<IVehicleModelEntity>.CreateAsync(vehicleModels, pagingParams.PageNumber ?? 1, pagingParams.PageSize ?? 5)).ToList();
                 }
                 catch (Exception)
                 {

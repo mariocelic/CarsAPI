@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Cars.API.DTO
+namespace Cars.WebAPI.DTO
 {
     public class VehicleMakeDTO
     {

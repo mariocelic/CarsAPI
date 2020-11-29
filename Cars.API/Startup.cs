@@ -6,18 +6,17 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using AutoMapper;
 using Autofac;
-using Cars.Data;
 using Cars.API.Mappings;
 using Cars.Repository;
 using Cars.Service;
 using Microsoft.OpenApi.Models;
-using Cars.Data.Helpers;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Identity;
-using Cars.Data.Interfaces;
+using Cars.DAL;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using System;
 
 namespace Cars
 {
@@ -40,41 +39,31 @@ namespace Cars
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection"),
-                    x => x.MigrationsAssembly("Cars.Data")));
-            
+                    x => x.MigrationsAssembly("Cars.DAL")));
+
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options =>
+                {
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuer = true,
+                        ValidateAudience = true,
+                        ValidateLifetime = true,
+                        ValidateIssuerSigningKey = true,
+                        ValidIssuer = Configuration["Tokens:Issuer"],
+                        ValidAudience = Configuration["Tokens:Issuer"],
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Tokens:Key"])),
+                        ClockSkew = TimeSpan.Zero,
+                    };
+                });
+
             services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = false)
-                .AddRoles<IdentityRole>()
-                .AddEntityFrameworkStores<ApplicationDbContext>();
+                .AddRoles<IdentityRole>();
 
             services.AddAutoMapper(typeof(Maps));
 
-            var jwtSettings = new JwtSettings();
-            Configuration.Bind(key: nameof(jwtSettings), jwtSettings);
-            services.AddSingleton(jwtSettings);
-
-
             services.AddControllers();
-
-            services.AddAuthentication(options =>
-            {
-                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-            })
-            .AddJwtBearer(options =>
-            {
-                options.SaveToken = true;
-                options.TokenValidationParameters = new TokenValidationParameters
-                {
-                    ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(key: Encoding.ASCII.GetBytes(jwtSettings.Secret)),
-                    ValidateIssuer = false,
-                    ValidateAudience = false,
-                    RequireExpirationTime = false,
-                    ValidateLifetime = true
-                };
-            });
-
+            
             services.AddAuthorization();
 
             services.AddSwaggerGen(options =>
@@ -143,9 +132,7 @@ namespace Cars
             });
 
             app.UseCors(x => x.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
-
-            //SeedData.Seed(userManager, roleManager);
-
+                        
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(

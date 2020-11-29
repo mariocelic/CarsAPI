@@ -3,13 +3,23 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30611.23
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cars.API", "Cars.API\Cars.API.csproj", "{F22F50B4-463B-4794-BC58-71D9737BA9D5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cars.WebAPI", "Cars.API\Cars.WebAPI.csproj", "{F22F50B4-463B-4794-BC58-71D9737BA9D5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cars.Data", "Cars.Data\Cars.Data.csproj", "{E84A150C-4DBF-4DAD-A9EF-32374C587F75}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cars.DAL", "Cars.Data\Cars.DAL.csproj", "{E84A150C-4DBF-4DAD-A9EF-32374C587F75}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cars.Repository", "Cars.Repository\Cars.Repository.csproj", "{686A7400-3FAB-4C4C-9430-DAA9CD973500}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cars.Repository", "Cars.Repository\Cars.Repository.csproj", "{686A7400-3FAB-4C4C-9430-DAA9CD973500}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cars.Service", "Cars.Service\Cars.Service.csproj", "{B2E4CECD-86D2-42C4-AFF9-3720FEA54800}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cars.Service", "Cars.Service\Cars.Service.csproj", "{B2E4CECD-86D2-42C4-AFF9-3720FEA54800}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cars.Common", "Cars.Common\Cars.Common.csproj", "{89140780-6526-4003-A650-68615BB75275}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cars.Model", "Cars.Model\Cars.Model.csproj", "{BE6AC514-5DF0-4FC2-9F1F-BD6DC880FFEE}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cars.Model.Common", "Cars.Modell.Common\Cars.Model.Common.csproj", "{5C4F9CE8-6023-4545-BE95-DEA3476934FC}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cars.Repository.Common", "Cars.Repository.Common\Cars.Repository.Common.csproj", "{D6F6FE26-716A-430C-B80D-45AF0E7D9DC9}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cars.Service.Common", "Cars.Service.Common\Cars.Service.Common.csproj", "{94587F63-C3AA-4BEE-A8A0-716B859DAC85}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +43,26 @@ Global
 		{B2E4CECD-86D2-42C4-AFF9-3720FEA54800}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B2E4CECD-86D2-42C4-AFF9-3720FEA54800}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B2E4CECD-86D2-42C4-AFF9-3720FEA54800}.Release|Any CPU.Build.0 = Release|Any CPU
+		{89140780-6526-4003-A650-68615BB75275}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{89140780-6526-4003-A650-68615BB75275}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{89140780-6526-4003-A650-68615BB75275}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{89140780-6526-4003-A650-68615BB75275}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BE6AC514-5DF0-4FC2-9F1F-BD6DC880FFEE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BE6AC514-5DF0-4FC2-9F1F-BD6DC880FFEE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BE6AC514-5DF0-4FC2-9F1F-BD6DC880FFEE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BE6AC514-5DF0-4FC2-9F1F-BD6DC880FFEE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5C4F9CE8-6023-4545-BE95-DEA3476934FC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5C4F9CE8-6023-4545-BE95-DEA3476934FC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5C4F9CE8-6023-4545-BE95-DEA3476934FC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5C4F9CE8-6023-4545-BE95-DEA3476934FC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D6F6FE26-716A-430C-B80D-45AF0E7D9DC9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D6F6FE26-716A-430C-B80D-45AF0E7D9DC9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D6F6FE26-716A-430C-B80D-45AF0E7D9DC9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D6F6FE26-716A-430C-B80D-45AF0E7D9DC9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{94587F63-C3AA-4BEE-A8A0-716B859DAC85}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{94587F63-C3AA-4BEE-A8A0-716B859DAC85}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{94587F63-C3AA-4BEE-A8A0-716B859DAC85}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{94587F63-C3AA-4BEE-A8A0-716B859DAC85}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

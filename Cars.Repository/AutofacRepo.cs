@@ -1,7 +1,7 @@
 ﻿using Autofac;
-using Cars.Data;
-using Cars.Data.Interfaces;
-using Cars.Repository.Interfaces;
+using Cars.DAL;
+using Cars.DAL.Abstract;
+using Cars.Repository.Common;
 using Microsoft.EntityFrameworkCore;
 
 namespace Cars.Repository

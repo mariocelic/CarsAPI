@@ -1,8 +1,9 @@
 ﻿using AutoMapper;
-using Cars.Data.Interfaces;
-using Cars.Data.Models;
-using Cars.Repository.Helpers;
-using Cars.Repository.Interfaces;
+using Cars.Common;
+using Cars.DAL.Abstract;
+using Cars.DAL.Entities;
+using Cars.Model.Common;
+using Cars.Repository.Common;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -11,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace Cars.Repository
 {
-    public class VehicleMakeRepository : AsyncRepositoryBase<VehicleMake>, IVehicleMakeRepository
+    public class VehicleMakeRepository : AsyncRepositoryBase<IVehicleMakeEntity>, IVehicleMakeRepository
     {       
         private readonly IMapper _mapper;
 
@@ -22,15 +23,15 @@ namespace Cars.Repository
 
         }
 
-        public IQueryable<VehicleMake> FindAllAsync()
+        public IQueryable<IVehicleMakeEntity> FindAllAsync()
         {
             return _context.VehicleMakes.AsNoTracking();
         }
 
-        public async Task<IList<VehicleMake>> FindAllMakesPaged(ISortingParameters sortingParams, IFilteringParameters filteringParams, IPagingParameters pagingParams)
+        public async Task<IList<IVehicleMakeEntity>> FindAllMakesPaged(ISortingParameters sortingParams, IFilteringParameters filteringParams, IPagingParameters pagingParams)
         {
 
-            IQueryable<VehicleMake> vehicleMakes;
+            IQueryable<IVehicleMakeEntity> vehicleMakes;
 
             // Filtering
             using (_context)
@@ -66,7 +67,7 @@ namespace Cars.Repository
                             break;
                     }
 
-                    return _mapper.Map<IList<VehicleMake>>(await PaginationList<VehicleMake>.CreateAsync(vehicleMakes, pagingParams.PageNumber ?? 1, pagingParams.PageSize ?? 5)).ToList();
+                    return _mapper.Map<IList<IVehicleMakeEntity>>(await PaginationList<IVehicleMakeEntity>.CreateAsync(vehicleMakes, pagingParams.PageNumber ?? 1, pagingParams.PageSize ?? 5)).ToList();
                 }
                 catch (Exception)
                 {

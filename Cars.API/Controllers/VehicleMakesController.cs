@@ -1,12 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
-using Cars.API.DTO;
-using Cars.Data.Models;
-using Cars.Repository.Helpers;
-using Cars.Repository.Interfaces;
-using Cars.Service.Interfaces;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Cars.Common;
+using Cars.DAL.Entities;
+using Cars.Repository.Common;
+using Cars.Service.Common;
+using Cars.WebAPI.DTO;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -14,7 +13,7 @@ namespace Cars.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    [Authorize]
     public class VehicleMakesController : ControllerBase
     {
         private readonly IUnitOfWork _unitOfWork;
@@ -32,17 +31,17 @@ namespace Cars.API.Controllers
         }
         // GET: VehicleMakes
         [HttpGet]
-        [Authorize(Roles = "Admin,User")]
+        [Authorize(Roles = "Administrator, Employee")]
         public async Task<IActionResult> Index([FromQuery]SortingParameters sortingParameters, [FromQuery] FilteringParameters filteringParameters,
             [FromQuery] PagingParameters pagingParameters)
         {
-            var SortingParams = new SortingParameters() { SortOrder = sortingParameters.SortOrder };
-            var FilteringParams = new FilteringParameters() { CurrentFilter = filteringParameters.CurrentFilter, FilterString = filteringParameters.FilterString };
-            var PagingParams = new PagingParameters() { PageNumber = pagingParameters.PageNumber, PageSize = pagingParameters.PageSize };
+            var sortingParams = new SortingParameters() { SortOrder = sortingParameters.SortOrder };
+            var filteringParams = new FilteringParameters() { CurrentFilter = filteringParameters.CurrentFilter, FilterString = filteringParameters.FilterString };
+            var pagingParams = new PagingParameters() { PageNumber = pagingParameters.PageNumber, PageSize = pagingParameters.PageSize };
 
             
 
-            IList<VehicleMake> listOfVehicleMakes = _mapper.Map<IList<VehicleMake>>(await _vehicleMakeService.FindAllMakesPaged(SortingParams, FilteringParams, PagingParams));
+            var listOfVehicleMakes = _mapper.Map<IList<VehicleMakeDTO>>(await _vehicleMakeService.FindAllMakesPaged(sortingParams, filteringParams, pagingParams));
             if (listOfVehicleMakes == null) return BadRequest();
 
             return Ok(listOfVehicleMakes);
@@ -50,7 +49,7 @@ namespace Cars.API.Controllers
 
         // GET: VehicleMakes/Details/5  
         [HttpGet("{id}")]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Administrator, Employee")]
         public async Task<IActionResult> Details(int id)
         {
             var make = await _vehicleMakeService.FindVehicleMakeById(id);
@@ -79,7 +78,7 @@ namespace Cars.API.Controllers
                     return Ok(makeDto);
                 }
 
-                var make = _mapper.Map<VehicleMake>(makeDto);
+                var make = _mapper.Map<IVehicleMakeEntity>(makeDto);
                 await _vehicleMakeService.CreateAsync(make);
 
                 return RedirectToAction(nameof(Index));
@@ -106,7 +105,7 @@ namespace Cars.API.Controllers
                 }
 
 
-                var makeItem = _mapper.Map<VehicleMake>(makeDto);
+                var makeItem = _mapper.Map<IVehicleMakeEntity>(makeDto);
                 _unitOfWork.VehicleMake.Update(makeItem);
                 await _unitOfWork.CommitAsync();
 

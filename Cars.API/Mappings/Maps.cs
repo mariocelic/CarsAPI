@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
-using Cars.Data.Models;
-using Cars.API.DTO;
+using Cars.DAL.Entities;
+using Cars.Model;
+using Cars.Model.Common;
+using Cars.WebAPI.DTO;
 
 namespace Cars.API.Mappings
 {
@@ -8,12 +10,23 @@ namespace Cars.API.Mappings
     {
         public Maps()
         {
+            // VehicleMake
+            CreateMap<IVehicleMake, VehicleMakeEntity>().ReverseMap();
+            CreateMap<VehicleMake, IVehicleMake>().ReverseMap();
+            CreateMap<VehicleMake, VehicleMakeEntity>().ReverseMap();
+            CreateMap<IVehicleMake, VehicleMakeDTO>().ReverseMap();
 
-            CreateMap<VehicleMake, VehicleMakeDTO>().ReverseMap();
+            // VehicleModel
+            CreateMap<IVehicleModel, IVehicleModelEntity>().ReverseMap();
+            CreateMap<VehicleModel, IVehicleModel>().ReverseMap();
+            CreateMap<VehicleModel, IVehicleModelEntity>().ReverseMap();
+            CreateMap<IVehicleModel, VehicleModelDTO>().ReverseMap();
 
-            CreateMap<VehicleModel, VehicleModelDTO>()
-                //.ForMember(dest => dest.VehicleMake, opts => opts.MapFrom(src => src.VehicleMake))
-                .ReverseMap();
+            // User
+            CreateMap<IUser, UserEntity>().ReverseMap();
+            CreateMap<User, IUser>().ReverseMap();
+            CreateMap<User, UserEntity>().ReverseMap();
+            CreateMap<IUser, UserDTO>().ReverseMap();
         }
 
     }

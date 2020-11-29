@@ -1,6 +1,5 @@
-﻿using Cars.Data;
-using Cars.Data.Interfaces;
-using Cars.Repository.Interfaces;
+﻿using Cars.DAL.Abstract;
+using Cars.Repository.Common;
 using System.Threading.Tasks;
 
 namespace Cars.Repository

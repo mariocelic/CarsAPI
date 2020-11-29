@@ -1,57 +1,56 @@
-﻿using Cars.Data.Models;
-using Cars.Data.Interfaces;
+﻿using Cars.DAL.Entities;
+using Cars.DAL.Abstract;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using Microsoft.AspNetCore.Identity;
 
-namespace Cars.Data
+namespace Cars.DAL
 {
-    public class ApplicationDbContext : IdentityDbContext<IdentityUser>, IApplicationDbContext
+    public class ApplicationDbContext : DbContext, IApplicationDbContext
     {
         public ApplicationDbContext(DbContextOptions options) : base(options)
         {
         }
 
-        public DbSet<VehicleMake> VehicleMakes { get; set; }
-        public DbSet<VehicleModel> VehicleModels { get; set; }
-       
+        public DbSet<VehicleMakeEntity> VehicleMakes { get; set; }
+        public DbSet<VehicleModelEntity> VehicleModels { get; set; }
+        public DbSet<UserEntity> Users { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
 
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<VehicleMake>()
-                .HasData(new VehicleMake()
+            modelBuilder.Entity<VehicleMakeEntity>()
+                .HasData(new VehicleMakeEntity()
                 {
                     MakeId = 1,
                     Name = "Audi",
                     Abrv = "Germany"
                 },
-                new VehicleMake
+                new VehicleMakeEntity
                 {
                     MakeId = 2,
                     Name = "BMW",
                     Abrv = "Germany"
                 },
-                new VehicleMake
+                new VehicleMakeEntity
                 {
                     MakeId = 3,
                     Name = "Honda",
                     Abrv = "Japan"
                 },
-                new VehicleMake
+                new VehicleMakeEntity
                 {
                     MakeId = 4,
                     Name = "Alfa Romeo",
                     Abrv = "Italy"
                 },
-                new VehicleMake
+                new VehicleMakeEntity
                 {
                     MakeId = 5,
                     Name = "Seat",
                     Abrv = "Spain"
                 },
-                new VehicleMake
+                new VehicleMakeEntity
                 {
                     MakeId = 6,
                     Name = "Subaru",
@@ -59,43 +58,43 @@ namespace Cars.Data
                 }
                 );
 
-            modelBuilder.Entity<VehicleModel>()
-                .HasData(new VehicleModel()
+            modelBuilder.Entity<VehicleModelEntity>()
+                .HasData(new VehicleModelEntity()
                 {
                     ModelId = 1,
                     Name = "A3",
                     Abrv = "Germany",
                     MakeId = 1
                 },
-                new VehicleModel
+                new VehicleModelEntity
                 {
                     ModelId = 2,
                     Name = "A6",
                     Abrv = "Germany",
                     MakeId = 1
                 },
-                new VehicleModel
+                new VehicleModelEntity
                 {
                     ModelId = 3,
                     Name = "M3",
                     Abrv = "Germany",
                     MakeId = 2
                 },
-                new VehicleModel
+                new VehicleModelEntity
                 {
                     ModelId = 4,
                     Name = "530",
                     Abrv = "Germany",
                     MakeId = 2
                 },
-                new VehicleModel
+                new VehicleModelEntity
                 {
                     ModelId = 5,
                     Name = "Leon",
                     Abrv = "Spain",
                     MakeId = 5
                 },
-                new VehicleModel
+                new VehicleModelEntity
                 {
                     ModelId = 6,
                     Name = "Civic",
@@ -103,6 +102,23 @@ namespace Cars.Data
                     MakeId = 3
                 }
                 );
+
+            modelBuilder.Entity<UserEntity>()
+               .HasData(new UserEntity()
+               {
+                   UserId = 1,
+                   Email = "blabla@test.com",
+                   Password = "Sifra.1",
+                   Role = "Administrator"
+               },
+               new UserEntity
+               {
+                   UserId = 2,
+                   Email = "joza@test.com",
+                   Password = "Sifra.2",
+                   Role = "Employee"
+               }
+               );
         }
 
     }

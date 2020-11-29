@@ -6,16 +6,11 @@
 
   <ItemGroup>
     <PackageReference Include="AspNetCore.Authentication.Plugin" Version="1.0.1" />
-    <PackageReference Include="Autofac" Version="6.0.0" />
-    <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="7.1.0" />
-    <PackageReference Include="AutoMapper" Version="10.1.1" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.ViewFeatures" Version="2.2.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Cars.Data\Cars.DAL.csproj" />
     <ProjectReference Include="..\Cars.Model\Cars.Model.csproj" />
-    <ProjectReference Include="..\Cars.Repository.Common\Cars.Repository.Common.csproj" />
   </ItemGroup>
 
 </Project>
