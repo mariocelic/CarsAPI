@@ -13,7 +13,7 @@ namespace Cars.DAL.Entities
         public string Abrv { get; set; }
 
         [ForeignKey("MakeId")]
-        public VehicleMakeEntity VehicleMake { get; set; }
+        public virtual VehicleMakeEntity VehicleMake { get; set; }
         public int MakeId { get; set; }
     }
 }

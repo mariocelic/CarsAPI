@@ -6,8 +6,7 @@ namespace Cars.DAL.Abstract
     public interface IApplicationDbContext : IDbContext
     {
         DbSet<VehicleMakeEntity> VehicleMakes { get; set; }
-        DbSet<VehicleModelEntity> VehicleModels { get; set; }
-        DbSet<UserEntity> Users { get; set; }
+        DbSet<VehicleModelEntity> VehicleModels { get; set; }        
 
     }
 }

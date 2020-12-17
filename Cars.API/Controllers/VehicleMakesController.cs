@@ -2,63 +2,46 @@
 using System.Threading.Tasks;
 using AutoMapper;
 using Cars.Common;
-using Cars.DAL.Entities;
-using Cars.Repository.Common;
+using Cars.Model.Common;
 using Cars.Service.Common;
 using Cars.WebAPI.DTO;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Project.WebAPI.Helpers;
 
 namespace Cars.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
     public class VehicleMakesController : ControllerBase
     {
-        private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
         private readonly IVehicleMakeService _vehicleMakeService;
 
-
-
-        public VehicleMakesController(IUnitOfWork unitOfWork, IMapper mapper, IVehicleMakeService vehicleMakeService)
+        public VehicleMakesController(IMapper mapper, IVehicleMakeService vehicleMakeService)
         {
-            _unitOfWork = unitOfWork;
             _mapper = mapper;
             _vehicleMakeService = vehicleMakeService;
 
         }
         // GET: VehicleMakes
-        [HttpGet]
-        [Authorize(Roles = "Administrator, Employee")]
+        [HttpGet(Name = "GetMakes")]
         public async Task<IActionResult> Index([FromQuery]SortingParameters sortingParameters, [FromQuery] FilteringParameters filteringParameters,
             [FromQuery] PagingParameters pagingParameters)
         {
-            var sortingParams = new SortingParameters() { SortOrder = sortingParameters.SortOrder };
-            var filteringParams = new FilteringParameters() { CurrentFilter = filteringParameters.CurrentFilter, FilterString = filteringParameters.FilterString };
-            var pagingParams = new PagingParameters() { PageNumber = pagingParameters.PageNumber, PageSize = pagingParameters.PageSize };
+            var makes = await _vehicleMakeService.FindAllMakesPaged(sortingParameters, filteringParameters, pagingParameters);
 
-            
+            Response.AddPagination(makes.CurrentPage, makes.PageSize, makes.TotalCount, makes.TotalPages);
 
-            var listOfVehicleMakes = _mapper.Map<IList<VehicleMakeDTO>>(await _vehicleMakeService.FindAllMakesPaged(sortingParams, filteringParams, pagingParams));
-            if (listOfVehicleMakes == null) return BadRequest();
+            var makesList = _mapper.Map<IEnumerable<IVehicleMake>>(makes.Items);
 
-            return Ok(listOfVehicleMakes);
+            return Ok(makesList);
         }
 
         // GET: VehicleMakes/Details/5  
-        [HttpGet("{id}")]
-        [Authorize(Roles = "Administrator, Employee")]
+        [HttpGet("{id}" , Name = "GetMake")]
         public async Task<IActionResult> Details(int id)
         {
             var make = await _vehicleMakeService.FindVehicleMakeById(id);
-
-            if (make == null)
-            {
-                return NotFound();
-            }
-
             var makeDto = _mapper.Map<VehicleMakeDTO>(make);
             return Ok(makeDto);
 
@@ -66,76 +49,42 @@ namespace Cars.API.Controllers
 
         
         // POST: VehicleMakes/Create        
-        [HttpPost]
-        [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> Create(VehicleMakeDTO makeDto)
+        [HttpPost(Name = "CreateMake")]
+        public async Task<IActionResult> Create([FromBody] VehicleMakeDTO makeDto)
         {
-            try
+            if (makeDto == null)
             {
-                // TODO: Add insert logic here
-                if (!ModelState.IsValid)
-                {
-                    return Ok(makeDto);
-                }
-
-                var make = _mapper.Map<IVehicleMakeEntity>(makeDto);
-                await _vehicleMakeService.CreateAsync(make);
-
-                return RedirectToAction(nameof(Index));
-
+                return BadRequest("Vehicle data not entered");
             }
-            catch
-            {
-                return Ok(makeDto);
-            }
+
+            var newMake =  _mapper.Map<IVehicleMake>(makeDto);
+            await _vehicleMakeService.CreateAsync(newMake);
+            
+            return NoContent();            
+           
         }
 
         
         // POST: VehicleMakes/Edit/5        
-        [HttpPut]
-        [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> Edit(VehicleMakeDTO makeDto)
+        [HttpPut(Name = "UpdateMake")]
+        public async Task<IActionResult> Edit([FromBody] VehicleMakeDTO makeDto)
         {
-            try
-            {
-                // TODO: Add update logic here
-                if (!ModelState.IsValid)
-                {
-                    return Ok(makeDto);
-                }
+            var editMake = _mapper.Map<IVehicleMake>(makeDto);
+            await _vehicleMakeService.UpdateAsync(editMake);
 
-
-                var makeItem = _mapper.Map<IVehicleMakeEntity>(makeDto);
-                _unitOfWork.VehicleMake.Update(makeItem);
-                await _unitOfWork.CommitAsync();
-
-
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return Ok(makeDto);
-            }
+            return NoContent();
         }
 
         
         // DELETE: VehicleMakes/Delete/5
-        [HttpDelete, ActionName("Delete")]
-        [Authorize(Roles = "Admin")]
+        [HttpDelete(Name = "DeleteMake")]
         public async Task<IActionResult> Delete(int id)
         {
-            try
-            {
+            
+            await _vehicleMakeService.DeleteAsync(id);
 
-                var make = await _vehicleMakeService.FindVehicleMakeById(id);
-                await _vehicleMakeService.DeleteAsync(id);
-
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return Ok();
-            }
+            return Ok();
         }
+
     }
 }

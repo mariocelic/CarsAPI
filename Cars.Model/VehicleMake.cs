@@ -8,6 +8,6 @@ namespace Cars.Model
         public int MakeId { get; set; }
         public string Name { get; set; }
         public string Abrv { get; set; }
-        public ICollection<IVehicleModel> VehicleModels { get; set; }
+        public IEnumerable<IVehicleModel> VehicleModels { get; set; }
     }
 }

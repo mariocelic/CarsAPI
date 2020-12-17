@@ -2,7 +2,7 @@
 {
     public interface IPagingParameters
     {
-        int? PageNumber { get; set; }
-        int? PageSize { get; set; }
+        int PageNumber { get; set; }
+        int PageSize { get; set; }
     }
 }

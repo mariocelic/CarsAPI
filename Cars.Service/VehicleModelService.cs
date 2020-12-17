@@ -1,5 +1,7 @@
-﻿using Cars.Common;
+﻿using AutoMapper;
+using Cars.Common;
 using Cars.DAL.Entities;
+using Cars.Model.Common;
 using Cars.Repository.Common;
 using Cars.Service.Common;
 using System.Collections.Generic;
@@ -10,75 +12,46 @@ namespace Cars.Service
     public class VehicleModelService : IVehicleModelService
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IMapper _mapper;
 
 
-
-        public VehicleModelService(IUnitOfWork unitOfWork)
+        public VehicleModelService(IUnitOfWork unitOfWork, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
-
+            _mapper = mapper;
         }
 
-        public async Task<IVehicleModelEntity> CreateAsync(IVehicleModelEntity vehicleModel)
+        public async Task CreateAsync(IVehicleModel vehicleModel)
         {
-            await _unitOfWork.VehicleModel.Create(vehicleModel);
+            var newModel = _mapper.Map<VehicleModelEntity>(vehicleModel);
+            await _unitOfWork.VehicleModel.Create(newModel);
             await _unitOfWork.CommitAsync();
 
-            return vehicleModel;
-
         }
 
-        public async Task<IVehicleModelEntity> DeleteAsync(int id)
+        public async Task UpdateAsync(IVehicleModel vehicleModel)
         {
-            var model = await _unitOfWork.VehicleModel.FindById(id);
+            var editModel = _mapper.Map<VehicleModelEntity>(vehicleModel);
+            _unitOfWork.VehicleModel.Update(editModel);
+            await _unitOfWork.CommitAsync();
 
+        }
+        public async Task DeleteAsync(int id)
+        {
             await _unitOfWork.VehicleModel.Delete(id);
             await _unitOfWork.CommitAsync();
-            return model;
         }
 
-        public async Task<IList<IVehicleModelEntity>> FindAllModelsPaged(ISortingParameters sortingParams, IFilteringParameters filteringParams, IPagingParameters pagingParams)
+        public async Task<IVehicleModel> FindVehicleModelById(int id)
+        {
+            var model = await _unitOfWork.VehicleModel.FindById(id);
+            var listModel = _mapper.Map<IVehicleModel>(model);
+            return listModel;
+        }
+        public async Task<PaginationList<IVehicleModelEntity>> FindAllModelsPaged(ISortingParameters sortingParams, IFilteringParameters filteringParams, IPagingParameters pagingParams)
         {
 
             return await _unitOfWork.VehicleModel.FindAllModelsPaged(sortingParams, filteringParams, pagingParams);
-
-        }
-
-
-
-        public async Task<IVehicleModelEntity> FindVehicleModelById(int id)
-        {
-            return await _unitOfWork.VehicleModel.FindByIdWithMake(id);
-        }
-
-        public async Task<IVehicleModelEntity> UpdateAsync(int id, IVehicleModelEntity vehicleModel)
-        {
-            var vehicleModelToUpdate = await _unitOfWork.VehicleModel.FindById(id);
-
-            if (string.IsNullOrEmpty(vehicleModel.Name))
-            {
-                vehicleModelToUpdate.Name = vehicleModelToUpdate.Name;
-            }
-            else
-            {
-                vehicleModelToUpdate.Name = vehicleModel.Name;
-            }
-
-
-            if (string.IsNullOrEmpty(vehicleModel.Abrv))
-            {
-                vehicleModelToUpdate.Abrv = vehicleModelToUpdate.Abrv;
-            }
-            else
-            {
-                vehicleModelToUpdate.Abrv = vehicleModel.Abrv;
-            }
-
-            _unitOfWork.VehicleModel.Update(vehicleModelToUpdate);
-            await _unitOfWork.CommitAsync();
-
-
-            return vehicleModelToUpdate;
 
         }
     }

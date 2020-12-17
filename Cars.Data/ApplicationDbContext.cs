@@ -12,7 +12,7 @@ namespace Cars.DAL
 
         public DbSet<VehicleMakeEntity> VehicleMakes { get; set; }
         public DbSet<VehicleModelEntity> VehicleModels { get; set; }
-        public DbSet<UserEntity> Users { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -102,23 +102,6 @@ namespace Cars.DAL
                     MakeId = 3
                 }
                 );
-
-            modelBuilder.Entity<UserEntity>()
-               .HasData(new UserEntity()
-               {
-                   UserId = 1,
-                   Email = "blabla@test.com",
-                   Password = "Sifra.1",
-                   Role = "Administrator"
-               },
-               new UserEntity
-               {
-                   UserId = 2,
-                   Email = "joza@test.com",
-                   Password = "Sifra.2",
-                   Role = "Employee"
-               }
-               );
         }
 
     }

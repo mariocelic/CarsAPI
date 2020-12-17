@@ -10,13 +10,8 @@ using Cars.API.Mappings;
 using Cars.Repository;
 using Cars.Service;
 using Microsoft.OpenApi.Models;
-using Microsoft.IdentityModel.Tokens;
-using System.Text;
-using System.Collections.Generic;
-using Microsoft.AspNetCore.Identity;
 using Cars.DAL;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using System;
+using Microsoft.AspNetCore.Identity;
 
 namespace Cars
 {
@@ -40,32 +35,21 @@ namespace Cars
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection"),
                     x => x.MigrationsAssembly("Cars.DAL")));
-
-            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                .AddJwtBearer(options =>
-                {
-                    options.TokenValidationParameters = new TokenValidationParameters
-                    {
-                        ValidateIssuer = true,
-                        ValidateAudience = true,
-                        ValidateLifetime = true,
-                        ValidateIssuerSigningKey = true,
-                        ValidIssuer = Configuration["Tokens:Issuer"],
-                        ValidAudience = Configuration["Tokens:Issuer"],
-                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Tokens:Key"])),
-                        ClockSkew = TimeSpan.Zero,
-                    };
-                });
-
+            
             services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = false)
                 .AddRoles<IdentityRole>();
-
-            services.AddAutoMapper(typeof(Maps));
-
+            
+            var mappingConfig = new MapperConfiguration(mc => 
+            {
+                mc.AddProfile(new ServiceMaps());
+                mc.AddProfile(new ApiMaps());
+            });
+            IMapper mapper = mappingConfig.CreateMapper();
+            services.AddSingleton(mapper);
+            
             services.AddControllers();
             
-            services.AddAuthorization();
-
+            
             services.AddSwaggerGen(options =>
             {
                 options.SwaggerDoc("v1", new OpenApiInfo
@@ -73,33 +57,10 @@ namespace Cars
                     Title = "CarsAPI",
                     Description = "for Mono"
                 });
-
-                var security = new Dictionary<string, IEnumerable<string>>
-                {
-                    { "Bearer", new string[0] }
-                };
-
-                options.AddSecurityDefinition(name: "Bearer", new OpenApiSecurityScheme
-                {
-
-                    Description = "JWT Authorization",
-                    Name = "Authorization",
-                    Scheme = "bearer"
-                });
-
-                options.AddSecurityRequirement(new OpenApiSecurityRequirement {
-                    {
-                        new OpenApiSecurityScheme {
-                            Reference = new OpenApiReference {
-                                Id = "Bearer", 
-                                Type = ReferenceType.SecurityScheme
-                            }
-                        }, new List<string>()
-                    }
-                });
+                                
             });
 
-            services.AddCors();
+            
         }    
         public void ConfigureContainer(ContainerBuilder builder)
         {
@@ -119,10 +80,8 @@ namespace Cars
 
             
             app.UseRouting();
-            
-            app.UseAuthentication();
-            app.UseAuthorization();
 
+            
             app.UseSwagger();
 
             app.UseSwaggerUI(options =>
@@ -131,8 +90,8 @@ namespace Cars
                 options.SwaggerEndpoint("/swagger/v1/swagger.json", "Cars API V1");
             });
 
-            app.UseCors(x => x.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
-                        
+
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(

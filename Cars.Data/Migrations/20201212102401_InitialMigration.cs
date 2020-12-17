@@ -7,21 +7,6 @@ namespace Cars.DAL.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Users",
-                columns: table => new
-                {
-                    UserId = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Email = table.Column<string>(maxLength: 30, nullable: false),
-                    Password = table.Column<string>(maxLength: 30, nullable: false),
-                    Role = table.Column<string>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Users", x => x.UserId);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "VehicleMakes",
                 columns: table => new
                 {
@@ -54,15 +39,6 @@ namespace Cars.DAL.Migrations
                         principalTable: "VehicleMakes",
                         principalColumn: "MakeId",
                         onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.InsertData(
-                table: "Users",
-                columns: new[] { "UserId", "Email", "Password", "Role" },
-                values: new object[,]
-                {
-                    { 1, "blabla@test.com", "Sifra.1", "Administrator" },
-                    { 2, "joza@test.com", "Sifra.2", "Employee" }
                 });
 
             migrationBuilder.InsertData(
@@ -99,9 +75,6 @@ namespace Cars.DAL.Migrations
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
-                name: "Users");
-
             migrationBuilder.DropTable(
                 name: "VehicleModels");
 

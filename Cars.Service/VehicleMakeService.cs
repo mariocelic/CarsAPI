@@ -1,8 +1,9 @@
-﻿using Cars.Common;
+﻿using AutoMapper;
+using Cars.Common;
 using Cars.DAL.Entities;
+using Cars.Model.Common;
 using Cars.Repository.Common;
 using Cars.Service.Common;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Cars.Service
@@ -10,73 +11,49 @@ namespace Cars.Service
     public class VehicleMakeService : IVehicleMakeService
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IMapper _mapper;
 
-        public VehicleMakeService(IUnitOfWork unitOfWork)
+        public VehicleMakeService(IUnitOfWork unitOfWork, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
+            _mapper = mapper;
 
         }
 
 
-        public async Task<IVehicleMakeEntity> CreateAsync(IVehicleMakeEntity vehicleMake)
+        public async Task CreateAsync(IVehicleMake vehicleMake)
         {
-            await _unitOfWork.VehicleMake.Create(vehicleMake);
+            var newMake = _mapper.Map<VehicleMakeEntity>(vehicleMake);            
+            await _unitOfWork.VehicleMake.Create(newMake);
             await _unitOfWork.CommitAsync();
 
-            return vehicleMake;
-
         }
 
-        public async Task<IVehicleMakeEntity> DeleteAsync(int id)
+        public async Task UpdateAsync(IVehicleMake vehicleMake)
+        {
+            var editMake = _mapper.Map<VehicleMakeEntity>(vehicleMake);
+            _unitOfWork.VehicleMake.Update(editMake);
+            await _unitOfWork.CommitAsync();
+        }
+
+       
+        public async Task DeleteAsync(int id)
+        {           
+            await _unitOfWork.VehicleMake.Delete(id);
+            await _unitOfWork.CommitAsync();            
+        }
+
+        public async Task<IVehicleMake> FindVehicleMakeById(int id)
         {
             var make = await _unitOfWork.VehicleMake.FindById(id);
-
-            await _unitOfWork.VehicleMake.Delete(id);
-            await _unitOfWork.CommitAsync();
-            return make;
+            var listMake = _mapper.Map<IVehicleMake>(make);
+            return listMake;
         }
-
-        public async Task<IList<IVehicleMakeEntity>> FindAllMakesPaged(ISortingParameters sortingParams, IFilteringParameters filteringParams, IPagingParameters pagingParams)
+        public async Task<PaginationList<IVehicleMakeEntity>> FindAllMakesPaged(ISortingParameters sortingParams, IFilteringParameters filteringParams, IPagingParameters pagingParams)
         {
 
             return await _unitOfWork.VehicleMake.FindAllMakesPaged(sortingParams, filteringParams, pagingParams);
 
-        }
-
-        public async Task<IVehicleMakeEntity> FindVehicleMakeById(int id)
-        {
-            return await _unitOfWork.VehicleMake.FindById(id);
-        }
-
-        public async Task<IVehicleMakeEntity> UpdateAsync(int id, IVehicleMakeEntity vehicleMake)
-        {
-            var vehicleMakeToUpdate = await _unitOfWork.VehicleMake.FindById(id);
-
-            if (string.IsNullOrEmpty(vehicleMake.Name))
-            {
-                vehicleMakeToUpdate.Name = vehicleMakeToUpdate.Name;
-            }
-            else
-            {
-                vehicleMakeToUpdate.Name = vehicleMake.Name;
-            }
-
-
-            if (string.IsNullOrEmpty(vehicleMake.Abrv))
-            {
-                vehicleMakeToUpdate.Abrv = vehicleMakeToUpdate.Abrv;
-            }
-            else
-            {
-                vehicleMakeToUpdate.Abrv = vehicleMake.Abrv;
-            }
-
-            _unitOfWork.VehicleMake.Update(vehicleMakeToUpdate);
-            await _unitOfWork.CommitAsync();
-
-
-            return vehicleMakeToUpdate;
-
-        }
+        }        
     }
 }

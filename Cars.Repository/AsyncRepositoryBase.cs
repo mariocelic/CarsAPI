@@ -1,7 +1,7 @@
 ﻿using Cars.DAL.Abstract;
 using Cars.Repository.Common;
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Cars.Repository
@@ -16,13 +16,10 @@ namespace Cars.Repository
         }
 
 
-        public async Task<IEnumerable<T>> FindAll()
+        public IQueryable<T> FindAll()
         {
-            return await _context.Set<T>().AsNoTracking().ToListAsync();
+            return _context.Set<T>().AsNoTracking();
         }
-
-
-
         public async Task<T> FindById(int id)
         {
             return await _context.Set<T>().FindAsync(id);

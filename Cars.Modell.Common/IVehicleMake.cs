@@ -7,6 +7,6 @@ namespace Cars.Model.Common
         string Abrv { get; set; }
         int MakeId { get; set; }
         string Name { get; set; }
-        ICollection<IVehicleModel> VehicleModels { get; set; }
+        IEnumerable<IVehicleModel> VehicleModels { get; set; }
     }
 }

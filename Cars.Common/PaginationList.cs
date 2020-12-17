@@ -8,39 +8,28 @@ namespace Cars.Common
 {
     public class PaginationList<T> : List<T>
     {
-        public int PageIndex { get; private set; }
-        public int TotalPages { get; private set; }
+        public int CurrentPage { get; set; }
+        public int TotalPages { get; set; }
+        public int PageSize { get; set; }
+        public int TotalCount { get; set; }
+        public List<T> Items { get; set; }
 
-        public PaginationList(List<T> items, int count, int pageIndex, int pageSize)
+        public PaginationList(List<T> items, int count, int pageNumber, int pageSize)
         {
-            PageIndex = pageIndex;
+            TotalCount = count;
+            PageSize = pageSize;
+            CurrentPage = pageNumber;
             TotalPages = (int)Math.Ceiling(count / (double)pageSize);
 
-            this.AddRange(items);
+            Items = items;
         }
 
-        public bool HasPreviousPage
-        {
-            get
-            {
-                return (PageIndex > 1);
-            }
-        }
-
-        public bool HasNextPage
-        {
-            get
-            {
-                return (PageIndex < TotalPages);
-            }
-        }
-
-        public static async Task<PaginationList<T>> CreateAsync(IQueryable<T> source, int pageIndex, int pageSize)
+        public static async Task<PaginationList<T>> CreateAsync(IQueryable<T> source, int pageNumber, int pageSize)
         {
             var count = await source.CountAsync();
-            var items = await source.Skip((pageIndex - 1) * pageSize).Take(pageSize).ToListAsync();
+            var items = await source.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToListAsync();
 
-            return new PaginationList<T>(items, count, pageIndex, pageSize);
+            return new PaginationList<T>(items, count, pageNumber, pageSize);
         }
     }
 }

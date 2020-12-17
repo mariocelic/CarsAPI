@@ -22,11 +22,9 @@ namespace Cars.Repository
         }
 
 
-        public IQueryable<IVehicleModelEntity> FindAllWithMake()
+        public IQueryable<IVehicleModelEntity> FindAllWithMake(int id)
         {
-            return _context.Set<IVehicleModelEntity>()
-               .AsNoTracking()
-               .Include(q => q.VehicleMake);
+            return _context.VehicleModels.Where(m => m.MakeId == id);
         }
 
         public async Task<IVehicleModelEntity> FindByIdWithMake(int id)
@@ -38,51 +36,58 @@ namespace Cars.Repository
 
         }
 
-        public async Task<IList<IVehicleModelEntity>> FindAllModelsPaged(ISortingParameters sortingParams, IFilteringParameters filteringParams, IPagingParameters pagingParams)
+        public async Task<PaginationList<IVehicleModelEntity>> FindAllModelsPaged(ISortingParameters sortingParams, IFilteringParameters filteringParams,
+            IPagingParameters pagingParams)
         {
-            IQueryable<IVehicleModelEntity> vehicleModels;
-
             // Filtering
-            using (_context)
+            if (!String.IsNullOrEmpty(filteringParams.SearchString))
             {
-                try
-                {
+                var searchModels = _context.VehicleModels.Include(q => q.VehicleMake).Where(q => q.VehicleMake.Name.Contains(filteringParams.SearchString)
+                                                                        || q.Abrv.Contains(filteringParams.SearchString)).OrderByDescending(m => m.Name);
 
-                    if (filteringParams.FilterString != null)
+                return await Paginate(pagingParams, searchModels);
+            }
+            
+            // Sorting
+            switch (sortingParams.SortOrder)
+            {
+                case "name_desc":
                     {
-                        pagingParams.PageNumber = 1;
+                        var models = _context.VehicleModels.Include(q => q.VehicleMake).OrderByDescending(q => q.VehicleMake.Name);
+
+                        return await Paginate(pagingParams, models);
                     }
-                    else
+                case "abrv_desc":
                     {
-                        filteringParams.FilterString = filteringParams.CurrentFilter;
+                        var models = _context.VehicleModels.Include(q => q.VehicleMake).OrderByDescending(q => q.Abrv);
+
+                        return await Paginate(pagingParams, models);
                     }
-
-
-                    if (!string.IsNullOrEmpty(filteringParams.FilterString))
+                case "abrv":
                     {
-                        vehicleModels = _context.VehicleModels.Include(q => q.VehicleMake).Where(q => q.VehicleMake.Name.Contains(filteringParams.FilterString));
-                    }
-                    else vehicleModels = null;
+                        var models = _context.VehicleModels.Include(q => q.VehicleMake).OrderBy(q => q.Abrv);
 
-                    //sorting
-                    switch (sortingParams.SortOrder)
+                        return await Paginate(pagingParams, models);
+                    }
+                default:
                     {
-                        case "name_desc":
-                            vehicleModels = _context.VehicleModels.Include(q => q.VehicleMake).OrderByDescending(q => q.VehicleMake.Name);
-                            break;
+                        var models = _context.VehicleModels.Include(q => q.VehicleMake).OrderBy(q => q.VehicleMake.Name);
 
-                        default:
-                            vehicleModels = vehicleModels != null ? vehicleModels.Include(q => q.VehicleMake).OrderBy(q => q.VehicleMake.Name) : _context.VehicleModels.Include(q => q.VehicleMake).OrderBy(q => q.VehicleMake.Name);
-                            break;
+                        return await Paginate(pagingParams, models);
                     }
-
-                    return _mapper.Map<IList<IVehicleModelEntity>>(await PaginationList<IVehicleModelEntity>.CreateAsync(vehicleModels, pagingParams.PageNumber ?? 1, pagingParams.PageSize ?? 5)).ToList();
-                }
-                catch (Exception)
-                {
-                    return null;
-                }
             }
         }
+
+        public async Task<PaginationList<IVehicleModelEntity>> Paginate(IPagingParameters page, IQueryable<IVehicleModelEntity> models)
+        {
+            var modelsPage = await PaginationList<IVehicleModelEntity>.CreateAsync(models, page.PageNumber, page.PageSize);
+
+            var list = _mapper.Map<List<IVehicleModelEntity>>(modelsPage.Items);
+
+            var listModels = new PaginationList<IVehicleModelEntity>(list, modelsPage.TotalCount, modelsPage.CurrentPage, modelsPage.PageSize);
+
+            return listModels;
+        }
+
     }
 }

@@ -1,17 +1,17 @@
 ﻿using Cars.Common;
 using Cars.DAL.Entities;
-using System.Collections.Generic;
+using Cars.Model.Common;
 using System.Threading.Tasks;
 
 namespace Cars.Service.Common
 {
     public interface IVehicleMakeService
     {
-        Task<IList<IVehicleMakeEntity>> FindAllMakesPaged(ISortingParameters sortingParams, IFilteringParameters filteringParams, IPagingParameters pagingParams);
-        Task<IVehicleMakeEntity> FindVehicleMakeById(int id);
-        Task<IVehicleMakeEntity> CreateAsync(IVehicleMakeEntity vehicleMake);
-        Task<IVehicleMakeEntity> UpdateAsync(int id, IVehicleMakeEntity vehicleMake);
-        Task<IVehicleMakeEntity> DeleteAsync(int id);
+        Task<PaginationList<IVehicleMakeEntity>> FindAllMakesPaged(ISortingParameters sortingParams, IFilteringParameters filteringParams, IPagingParameters pagingParams);
+        Task<IVehicleMake> FindVehicleMakeById(int id);
+        Task CreateAsync(IVehicleMake vehicleMake);
+        Task UpdateAsync(IVehicleMake vehicleMake);
+        Task DeleteAsync(int id);
 
     }
 }

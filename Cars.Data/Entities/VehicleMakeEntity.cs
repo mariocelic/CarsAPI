@@ -12,6 +12,6 @@ namespace Cars.DAL.Entities
         public string Name { get; set; }
         public string Abrv { get; set; }
 
-        public ICollection<VehicleModelEntity> VehicleModels { get; set; }
+        public virtual IEnumerable<VehicleModelEntity> VehicleModels { get; set; }
     }
 }

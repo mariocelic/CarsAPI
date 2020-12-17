@@ -7,6 +7,6 @@ namespace Cars.DAL.Entities
         string Abrv { get; set; }
         int MakeId { get; set; }
         string Name { get; set; }
-        ICollection<VehicleModelEntity> VehicleModels { get; set; }
+        IEnumerable<VehicleModelEntity> VehicleModels { get; set; }
     }
 }

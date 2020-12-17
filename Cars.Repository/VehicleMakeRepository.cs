@@ -2,7 +2,6 @@
 using Cars.Common;
 using Cars.DAL.Abstract;
 using Cars.DAL.Entities;
-using Cars.Model.Common;
 using Cars.Repository.Common;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -13,7 +12,7 @@ using System.Threading.Tasks;
 namespace Cars.Repository
 {
     public class VehicleMakeRepository : AsyncRepositoryBase<IVehicleMakeEntity>, IVehicleMakeRepository
-    {       
+    {
         private readonly IMapper _mapper;
 
         public VehicleMakeRepository(IApplicationDbContext context, IMapper mapper) : base(context)
@@ -28,52 +27,59 @@ namespace Cars.Repository
             return _context.VehicleMakes.AsNoTracking();
         }
 
-        public async Task<IList<IVehicleMakeEntity>> FindAllMakesPaged(ISortingParameters sortingParams, IFilteringParameters filteringParams, IPagingParameters pagingParams)
+        public async Task<PaginationList<IVehicleMakeEntity>> FindAllMakesPaged(ISortingParameters sortingParams, IFilteringParameters filteringParams,
+            IPagingParameters pagingParams)
         {
-
-            IQueryable<IVehicleMakeEntity> vehicleMakes;
-
+            
             // Filtering
-            using (_context)
+            if (!String.IsNullOrEmpty(filteringParams.SearchString))
             {
-                try
-                {
+                var searchMakes = _context.VehicleMakes.Where(m => m.Name.Contains(filteringParams.SearchString)
+                                                                        || m.Abrv.Contains(filteringParams.SearchString)).OrderByDescending(m => m.Name);
 
-                    if (filteringParams.FilterString != null)
+                return await Paginate(pagingParams, searchMakes);
+            }
+
+            // Sorting
+            switch (sortingParams.SortOrder)
+            {
+                case "name_desc":
                     {
-                        pagingParams.PageNumber = 1;
+                        var makes = _context.VehicleMakes.OrderByDescending(m => m.Name);
+
+                        return await Paginate(pagingParams, makes);
                     }
-                    else
+                case "abrv":
                     {
-                        filteringParams.FilterString = filteringParams.CurrentFilter;
+                        var makes = _context.VehicleMakes.OrderBy(m => m.Abrv);
+
+                        return await Paginate(pagingParams, makes);
                     }
-
-
-                    if (!string.IsNullOrEmpty(filteringParams.FilterString))
+                case "abrv_desc":
                     {
-                        vehicleMakes = _context.VehicleMakes.Where(q => q.Name.Contains(filteringParams.FilterString));
-                    }
-                    else vehicleMakes = null;
+                        var makes = _context.VehicleMakes.OrderByDescending(m => m.Abrv);
 
-                    //sorting
-                    switch (sortingParams.SortOrder)
+                        return await Paginate(pagingParams, makes);
+                    }
+                default:
                     {
-                        case "name_desc":
-                            vehicleMakes = _context.VehicleMakes.OrderByDescending(q => q.Name);
-                            break;
+                        var makes = _context.VehicleMakes.OrderBy(m => m.Name);
 
-                        default:
-                            vehicleMakes = vehicleMakes != null ? vehicleMakes.OrderBy(q => q.Name) : _context.VehicleMakes.OrderBy(q => q.Name);
-                            break;
+                        return await Paginate(pagingParams, makes);
                     }
-
-                    return _mapper.Map<IList<IVehicleMakeEntity>>(await PaginationList<IVehicleMakeEntity>.CreateAsync(vehicleMakes, pagingParams.PageNumber ?? 1, pagingParams.PageSize ?? 5)).ToList();
-                }
-                catch (Exception)
-                {
-                    return null;
-                }
             }
         }
+
+        public async Task<PaginationList<IVehicleMakeEntity>> Paginate(IPagingParameters page, IQueryable<IVehicleMakeEntity> makes)
+        {
+            var makesPage = await PaginationList<IVehicleMakeEntity>.CreateAsync(makes, page.PageNumber, page.PageSize);
+
+            var list = _mapper.Map<List<IVehicleMakeEntity>>(makesPage.Items);
+
+            var listMakes = new PaginationList<IVehicleMakeEntity>(list, makesPage.TotalCount, makesPage.CurrentPage, makesPage.PageSize);
+
+            return listMakes;
+        }
+
     }
 }

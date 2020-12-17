@@ -18,48 +18,6 @@ namespace Cars.DAL.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("Cars.DAL.Entities.UserEntity", b =>
-                {
-                    b.Property<int>("UserId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(30)")
-                        .HasMaxLength(30);
-
-                    b.Property<string>("Password")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(30)")
-                        .HasMaxLength(30);
-
-                    b.Property<string>("Role")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("UserId");
-
-                    b.ToTable("Users");
-
-                    b.HasData(
-                        new
-                        {
-                            UserId = 1,
-                            Email = "blabla@test.com",
-                            Password = "Sifra.1",
-                            Role = "Administrator"
-                        },
-                        new
-                        {
-                            UserId = 2,
-                            Email = "joza@test.com",
-                            Password = "Sifra.2",
-                            Role = "Employee"
-                        });
-                });
-
             modelBuilder.Entity("Cars.DAL.Entities.VehicleMakeEntity", b =>
                 {
                     b.Property<int>("MakeId")
@@ -190,7 +148,7 @@ namespace Cars.DAL.Migrations
             modelBuilder.Entity("Cars.DAL.Entities.VehicleModelEntity", b =>
                 {
                     b.HasOne("Cars.DAL.Entities.VehicleMakeEntity", "VehicleMake")
-                        .WithMany("VehicleModels")
+                        .WithMany("VehicleModelEntities")
                         .HasForeignKey("MakeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
