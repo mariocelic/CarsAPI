@@ -1,4 +1,5 @@
 ﻿using Autofac;
+using AutoMapper;
 using Cars.Service.Common;
 
 namespace Cars.Service
@@ -10,7 +11,7 @@ namespace Cars.Service
            
             builder.RegisterType<VehicleMakeService>().As<IVehicleMakeService>().InstancePerLifetimeScope();
             builder.RegisterType<VehicleModelService>().As<IVehicleModelService>().InstancePerLifetimeScope();
-
+           
             base.Load(builder);
         }
 

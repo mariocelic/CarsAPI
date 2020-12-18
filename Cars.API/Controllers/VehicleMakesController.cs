@@ -42,8 +42,8 @@ namespace Cars.API.Controllers
         public async Task<IActionResult> Details(int id)
         {
             var make = await _vehicleMakeService.FindVehicleMakeById(id);
-            var makeDto = _mapper.Map<VehicleMakeDTO>(make);
-            return Ok(makeDto);
+            
+            return Ok(make);
 
         }
 

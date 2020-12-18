@@ -28,6 +28,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Cars.Common\Cars.Common.csproj" />
     <ProjectReference Include="..\Cars.Data\Cars.DAL.csproj" />
     <ProjectReference Include="..\Cars.Repository\Cars.Repository.csproj" />
     <ProjectReference Include="..\Cars.Service\Cars.Service.csproj" />

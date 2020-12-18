@@ -16,13 +16,13 @@ namespace Cars.API.Controllers
     {
         private readonly IMapper _mapper;
         private readonly IVehicleModelService _vehicleModelService;
-        private readonly IVehicleMakeService _vehicleMakeService;
+        
 
-        public VehicleModelsController(IMapper mapper, IVehicleModelService vehicleModelService, IVehicleMakeService vehicleMakeService)
+        public VehicleModelsController(IMapper mapper, IVehicleModelService vehicleModelService)
         {
             _mapper = mapper;
             _vehicleModelService = vehicleModelService;
-            _vehicleMakeService = vehicleMakeService;
+            
         }
         // GET: VehicleModels
         [HttpGet(Name = "GetModels")]
@@ -69,8 +69,8 @@ namespace Cars.API.Controllers
         [HttpPut(Name = "UpdateModel")]
         public async Task<IActionResult> Edit(VehicleModelDTO modelDto)
         {
-            var editModel = _mapper.Map<IVehicleMake>(modelDto);
-            await _vehicleMakeService.UpdateAsync(editModel);
+            var editModel = _mapper.Map<IVehicleModel>(modelDto);
+            await _vehicleModelService.UpdateAsync(editModel);
 
             return NoContent();
         }

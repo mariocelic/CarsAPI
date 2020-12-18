@@ -5,10 +5,10 @@ using System.Threading.Tasks;
 
 namespace Cars.Repository.Common
 {
-    public interface IVehicleMakeRepository : IAsyncRepositoryBase<IVehicleMakeEntity>
+    public interface IVehicleMakeRepository : IAsyncRepositoryBase<VehicleMakeEntity>
     {
-        IQueryable<IVehicleMakeEntity> FindAllAsync();
-        Task<PaginationList<IVehicleMakeEntity>> FindAllMakesPaged(ISortingParameters sortingParams, IFilteringParameters filteringParams, IPagingParameters pagingParams);
-        Task<PaginationList<IVehicleMakeEntity>> Paginate(IPagingParameters page, IQueryable<IVehicleMakeEntity> makes);
+        IQueryable<VehicleMakeEntity> FindAllAsync();
+        Task<PaginationList<VehicleMakeEntity>> FindAllMakesPaged(ISortingParameters sortingParams, IFilteringParameters filteringParams, IPagingParameters pagingParams);
+        Task<PaginationList<VehicleMakeEntity>> Paginate(IPagingParameters page, IQueryable<VehicleMakeEntity> makes);
     }
 }

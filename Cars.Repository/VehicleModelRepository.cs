@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Cars.Repository
 {
-    public class VehicleModelRepository : AsyncRepositoryBase<IVehicleModelEntity>, IVehicleModelRepository
+    public class VehicleModelRepository : AsyncRepositoryBase<VehicleModelEntity>, IVehicleModelRepository
     {
         private readonly IMapper _mapper;
 
@@ -22,27 +22,22 @@ namespace Cars.Repository
         }
 
 
-        public IQueryable<IVehicleModelEntity> FindAllWithMake(int id)
+        public async Task<VehicleModelEntity> FindWithMakeById(int id)
         {
-            return _context.VehicleModels.Where(m => m.MakeId == id);
-        }
-
-        public async Task<IVehicleModelEntity> FindByIdWithMake(int id)
-        {
-            return await _context.Set<IVehicleModelEntity>()
+            return await _context.Set<VehicleModelEntity>()
                 .AsNoTracking()
                 .Include(q => q.VehicleMake)
                 .FirstOrDefaultAsync(q => q.ModelId == id);
 
         }
 
-        public async Task<PaginationList<IVehicleModelEntity>> FindAllModelsPaged(ISortingParameters sortingParams, IFilteringParameters filteringParams,
+        public async Task<PaginationList<VehicleModelEntity>> FindAllModelsPaged(ISortingParameters sortingParams, IFilteringParameters filteringParams,
             IPagingParameters pagingParams)
         {
             // Filtering
             if (!String.IsNullOrEmpty(filteringParams.SearchString))
             {
-                var searchModels = _context.VehicleModels.Include(q => q.VehicleMake).Where(q => q.VehicleMake.Name.Contains(filteringParams.SearchString)
+                var searchModels = _context.VehicleModels.Include(q => q.VehicleMake).Where(q => q.Name.Contains(filteringParams.SearchString)
                                                                         || q.Abrv.Contains(filteringParams.SearchString)).OrderByDescending(m => m.Name);
 
                 return await Paginate(pagingParams, searchModels);
@@ -78,13 +73,13 @@ namespace Cars.Repository
             }
         }
 
-        public async Task<PaginationList<IVehicleModelEntity>> Paginate(IPagingParameters page, IQueryable<IVehicleModelEntity> models)
+        public async Task<PaginationList<VehicleModelEntity>> Paginate(IPagingParameters page, IQueryable<VehicleModelEntity> models)
         {
-            var modelsPage = await PaginationList<IVehicleModelEntity>.CreateAsync(models, page.PageNumber, page.PageSize);
+            var modelsPage = await PaginationList<VehicleModelEntity>.CreateAsync(models, page.PageNumber, page.PageSize);
 
-            var list = _mapper.Map<List<IVehicleModelEntity>>(modelsPage.Items);
+            var list = _mapper.Map<List<VehicleModelEntity>>(modelsPage.Items);
 
-            var listModels = new PaginationList<IVehicleModelEntity>(list, modelsPage.TotalCount, modelsPage.CurrentPage, modelsPage.PageSize);
+            var listModels = new PaginationList<VehicleModelEntity>(list, modelsPage.TotalCount, modelsPage.CurrentPage, modelsPage.PageSize);
 
             return listModels;
         }

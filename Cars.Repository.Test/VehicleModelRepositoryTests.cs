@@ -38,7 +38,7 @@ namespace Cars.Repository.Test
             mockModelRepository.Setup(mr => mr.Create(It.IsAny<IVehicleModelEntity>())).Returns(
                 (IVehicleModelEntity target) =>
                 {
-                    if (target.ModelId.Equals(default(int)))
+                    if (target.ModelId.Equals(default))
                     {
                         target.ModelId = models.Count() + 1;
                         updateList.Add(target);

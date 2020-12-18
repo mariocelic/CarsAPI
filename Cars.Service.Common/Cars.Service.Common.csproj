@@ -10,7 +10,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Cars.Common\Cars.Common.csproj" />
-    <ProjectReference Include="..\Cars.Data\Cars.DAL.csproj" />
     <ProjectReference Include="..\Cars.Modell.Common\Cars.Model.Common.csproj" />
   </ItemGroup>
 

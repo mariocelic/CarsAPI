@@ -1,6 +1,5 @@
 ﻿using Cars.Model.Common;
 
-
 namespace Cars.Model
 {
     public class VehicleModel : IVehicleModel

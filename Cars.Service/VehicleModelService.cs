@@ -4,7 +4,6 @@ using Cars.DAL.Entities;
 using Cars.Model.Common;
 using Cars.Repository.Common;
 using Cars.Service.Common;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Cars.Service
@@ -48,7 +47,7 @@ namespace Cars.Service
             var listModel = _mapper.Map<IVehicleModel>(model);
             return listModel;
         }
-        public async Task<PaginationList<IVehicleModelEntity>> FindAllModelsPaged(ISortingParameters sortingParams, IFilteringParameters filteringParams, IPagingParameters pagingParams)
+        public async Task<PaginationList<VehicleModelEntity>> FindAllModelsPaged(ISortingParameters sortingParams, IFilteringParameters filteringParams, IPagingParameters pagingParams)
         {
 
             return await _unitOfWork.VehicleModel.FindAllModelsPaged(sortingParams, filteringParams, pagingParams);

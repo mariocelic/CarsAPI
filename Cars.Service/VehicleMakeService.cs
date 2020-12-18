@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Cars.Common;
 using Cars.DAL.Entities;
+using Cars.Model;
 using Cars.Model.Common;
 using Cars.Repository.Common;
 using Cars.Service.Common;
@@ -49,7 +50,7 @@ namespace Cars.Service
             var listMake = _mapper.Map<IVehicleMake>(make);
             return listMake;
         }
-        public async Task<PaginationList<IVehicleMakeEntity>> FindAllMakesPaged(ISortingParameters sortingParams, IFilteringParameters filteringParams, IPagingParameters pagingParams)
+        public async Task<PaginationList<VehicleMakeEntity>> FindAllMakesPaged(ISortingParameters sortingParams, IFilteringParameters filteringParams, IPagingParameters pagingParams)
         {
 
             return await _unitOfWork.VehicleMake.FindAllMakesPaged(sortingParams, filteringParams, pagingParams);

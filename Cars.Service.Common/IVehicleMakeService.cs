@@ -7,7 +7,7 @@ namespace Cars.Service.Common
 {
     public interface IVehicleMakeService
     {
-        Task<PaginationList<IVehicleMakeEntity>> FindAllMakesPaged(ISortingParameters sortingParams, IFilteringParameters filteringParams, IPagingParameters pagingParams);
+        Task<PaginationList<VehicleMakeEntity>> FindAllMakesPaged(ISortingParameters sortingParams, IFilteringParameters filteringParams, IPagingParameters pagingParams);
         Task<IVehicleMake> FindVehicleMakeById(int id);
         Task CreateAsync(IVehicleMake vehicleMake);
         Task UpdateAsync(IVehicleMake vehicleMake);

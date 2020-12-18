@@ -12,6 +12,7 @@ using Cars.Service;
 using Microsoft.OpenApi.Models;
 using Cars.DAL;
 using Microsoft.AspNetCore.Identity;
+using System;
 
 namespace Cars
 {
@@ -38,17 +39,11 @@ namespace Cars
             
             services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = false)
                 .AddRoles<IdentityRole>();
-            
-            var mappingConfig = new MapperConfiguration(mc => 
-            {
-                mc.AddProfile(new ServiceMaps());
-                mc.AddProfile(new ApiMaps());
-            });
-            IMapper mapper = mappingConfig.CreateMapper();
-            services.AddSingleton(mapper);
-            
-            services.AddControllers();
-            
+
+            services.AddAutoMapper(typeof(ApiMaps).Assembly);
+            services.AddAutoMapper(typeof(RepoMaps).Assembly);
+
+            services.AddControllers();            
             
             services.AddSwaggerGen(options =>
             {
