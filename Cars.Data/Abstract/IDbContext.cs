@@ -14,7 +14,7 @@ namespace Cars.DAL.Abstract
         DatabaseFacade Database { get; }
         ChangeTracker ChangeTracker { get; }
         EntityEntry Add(object entity);
-        EntityEntry<TEntity> Add<TEntity>(TEntity entity) where TEntity : class;        
+        EntityEntry<TEntity> Add<TEntity>(TEntity entity) where TEntity : class;
         void AddRange(IEnumerable<object> entities);
         void AddRange(params object[] entities);
         Task AddRangeAsync(IEnumerable<object> entities, CancellationToken cancellationToken = default);
@@ -27,7 +27,7 @@ namespace Cars.DAL.Abstract
         EntityEntry Entry(object entity);
         bool Equals(object obj);
         object Find(Type entityType, params object[] keyValues);
-        TEntity Find<TEntity>(params object[] keyValues) where TEntity : class;        
+        TEntity Find<TEntity>(params object[] keyValues) where TEntity : class;
         int GetHashCode();
         [Obsolete]
         DbQuery<TQuery> Query<TQuery>() where TQuery : class;

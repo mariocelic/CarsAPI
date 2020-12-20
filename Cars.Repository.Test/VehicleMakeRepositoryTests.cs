@@ -8,7 +8,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace Project.Repository.Tests
+namespace Cars.Repository.Tests
 {
     public class VehicleMakeRepositoryTests
     {
@@ -18,7 +18,7 @@ namespace Project.Repository.Tests
         {
             Mock<IVehicleMakeRepository> mockMakeRepository = new Mock<IVehicleMakeRepository>();
 
-            IEnumerable<IVehicleMakeEntity> makes = new List<VehicleMakeEntity> {
+            var makes = new List<VehicleMakeEntity> {
                 new VehicleMakeEntity { MakeId = 1, Name = "Audi", Abrv = "Germany" },
                 new VehicleMakeEntity { MakeId = 2, Name = "BMW", Abrv = "BMW" },
                 new VehicleMakeEntity { MakeId = 3, Name = "Honda", Abrv = "Japan" },
@@ -28,15 +28,15 @@ namespace Project.Repository.Tests
             var updateList = makes.ToList();
 
             // return all makes
-            mockMakeRepository.Setup(mr => mr.FindAllMakesPaged(It.IsAny<SortingParameters>(), It.IsAny<FilteringParameters>(), It.IsAny<PagingParameters>()))
-                .ReturnsAsync(new PaginationList<IVehicleMakeEntity>(updateList, updateList.Count(), It.IsAny<int>(), It.IsAny<int>()));
+            mockMakeRepository.Setup(mr => mr.FindAllMakesPaged(It.IsAny<ISortingParameters>(), It.IsAny<IFilteringParameters>(), It.IsAny<IPagingParameters>()))
+                .ReturnsAsync(new PaginationList<VehicleMakeEntity>(updateList, updateList.Count(), It.IsAny<int>(), It.IsAny<int>()));
 
             // return a make by Id
             mockMakeRepository.Setup(mr => mr.FindById(It.IsAny<int>())).ReturnsAsync((int i) => updateList.Where(x => x.MakeId == i).FirstOrDefault());
 
             // Allows us to test saving a product
-            mockMakeRepository.Setup(mr => mr.Create(It.IsAny<IVehicleMakeEntity>())).Returns(
-                (IVehicleMakeEntity target) =>
+            mockMakeRepository.Setup(mr => mr.Create(It.IsAny<VehicleMakeEntity>())).Returns(
+                (VehicleMakeEntity target) =>
                 {
                     if (target.MakeId.Equals(default))
                     {
@@ -60,9 +60,9 @@ namespace Project.Repository.Tests
                     return Task.FromResult(true);
                 });
 
-            mockMakeRepository.Setup(mr => mr.Update(It.IsAny<IVehicleMakeEntity>()));
+            mockMakeRepository.Setup(mr => mr.Update(It.IsAny<VehicleMakeEntity>()));
 
-            mockMakeRepository.Setup(mr => mr.Delete(It.IsAny<int>())).Callback<IVehicleMakeEntity>((entity) => updateList.Remove(entity));
+            mockMakeRepository.Setup(mr => mr.Delete(It.IsAny<int>())).Callback<VehicleMakeEntity>((entity) => updateList.Remove(entity));
 
             _mockMakeRepository = mockMakeRepository.Object;
         }
@@ -88,7 +88,7 @@ namespace Project.Repository.Tests
                 PageSize = 2
             };
 
-            PaginationList<IVehicleMakeEntity> testMakes = _mockMakeRepository.FindAllMakesPaged(sortingParams, filteringParams, pagingParams).Result;
+            PaginationList<VehicleMakeEntity> testMakes = _mockMakeRepository.FindAllMakesPaged(sortingParams, filteringParams, pagingParams).Result;
 
             testMakes.Should().NotBeNull();
 

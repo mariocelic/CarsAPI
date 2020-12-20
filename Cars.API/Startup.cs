@@ -40,8 +40,9 @@ namespace Cars
             services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = false)
                 .AddRoles<IdentityRole>();
 
-            services.AddAutoMapper(typeof(ApiMaps).Assembly);
-            services.AddAutoMapper(typeof(RepoMaps).Assembly);
+
+            services.AddAutoMapper(typeof(Startup).Assembly);
+
 
             services.AddControllers();            
             

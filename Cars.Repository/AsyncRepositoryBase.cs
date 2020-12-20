@@ -1,4 +1,4 @@
-﻿using Cars.DAL.Abstract;
+﻿using Cars.DAL;
 using Cars.Repository.Common;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
@@ -8,9 +8,9 @@ namespace Cars.Repository
 {
     public class AsyncRepositoryBase<T> : IAsyncRepositoryBase<T> where T : class
     {
-        protected IApplicationDbContext _context;
+        protected ApplicationDbContext _context;
 
-        public AsyncRepositoryBase(IApplicationDbContext context) 
+        public AsyncRepositoryBase(ApplicationDbContext context) 
         {
             _context = context;
         }

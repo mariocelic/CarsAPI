@@ -44,13 +44,13 @@ namespace Cars.Service
             await _unitOfWork.CommitAsync();            
         }
 
-        public async Task<IVehicleMake> FindVehicleMakeById(int id)
+        public async Task<VehicleMakeEntity> FindVehicleMakeById(int id)
         {
             var make = await _unitOfWork.VehicleMake.FindById(id);
-            var listMake = _mapper.Map<IVehicleMake>(make);
+            var listMake = _mapper.Map<VehicleMakeEntity>(make);
             return listMake;
         }
-        public async Task<PaginationList<VehicleMakeEntity>> FindAllMakesPaged(ISortingParameters sortingParams, IFilteringParameters filteringParams, IPagingParameters pagingParams)
+        public async Task<PaginationList<IVehicleMakeEntity>> FindAllMakesPaged(ISortingParameters sortingParams, IFilteringParameters filteringParams, IPagingParameters pagingParams)
         {
 
             return await _unitOfWork.VehicleMake.FindAllMakesPaged(sortingParams, filteringParams, pagingParams);

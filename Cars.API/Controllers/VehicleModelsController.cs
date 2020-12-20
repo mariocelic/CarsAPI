@@ -43,11 +43,10 @@ namespace Cars.API.Controllers
         public async Task<IActionResult> Details(int id)
         {
             var model = await _vehicleModelService.FindVehicleModelById(id);
-            var modelDto = _mapper.Map<VehicleModelDTO>(model);
-            return Ok(modelDto);
+
+            return Ok(model);
 
         }
-
 
         // POST: VehicleModels/Create        
         [HttpPost(Name = "CreateModel")]

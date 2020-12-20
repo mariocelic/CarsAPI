@@ -10,25 +10,13 @@ namespace Cars.API.Mappings
     public class ApiMaps : Profile
     {
         public ApiMaps()
-        {
-            
-            // VehicleMake
-            CreateMap<IVehicleMake, VehicleMakeEntity>().ReverseMap();
-            CreateMap<VehicleMake, IVehicleMake>().ReverseMap();
-            CreateMap<VehicleMake, VehicleMakeEntity>().ReverseMap();
-            CreateMap<IVehicleMake, VehicleMakeDTO>().ReverseMap();
+        {           
+          
+            // VehicleMake            
+            CreateMap<VehicleMakeDTO, IVehicleMake>().ReverseMap();
 
             // VehicleModel
-            CreateMap<IVehicleModel, IVehicleModelEntity>().ReverseMap();
-            CreateMap<VehicleModel, IVehicleModel>().ReverseMap();
-            CreateMap<VehicleModel, IVehicleModelEntity>().ReverseMap();
-            CreateMap<IVehicleModel, VehicleModelDTO>().ReverseMap();
-
-
-            //Paging
-            CreateMap<PaginationList<IVehicleMakeEntity>, PaginationList<IVehicleMake>>();
-            CreateMap<PaginationList<IVehicleModelEntity>, PaginationList<IVehicleModel>>();
-
+            CreateMap<VehicleModelDTO, IVehicleModel>().ReverseMap();
         }
 
     }

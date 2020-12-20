@@ -1,8 +1,7 @@
 ﻿using AutoMapper;
 using Cars.Common;
-using Cars.DAL.Abstract;
+using Cars.DAL;
 using Cars.DAL.Entities;
-using Cars.Model.Common;
 using Cars.Repository.Common;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -16,19 +15,19 @@ namespace Cars.Repository
     {
         private readonly IMapper _mapper;
 
-        public VehicleMakeRepository(IApplicationDbContext context, IMapper mapper) : base(context)
+        public VehicleMakeRepository(ApplicationDbContext context, IMapper mapper) : base(context)
         {
             _context = context;
             _mapper = mapper;
 
         }
 
-        public IQueryable<VehicleMakeEntity> FindAllAsync()
+        public IQueryable<IVehicleMakeEntity> FindAllAsync()
         {
             return _context.VehicleMakes.AsNoTracking();
         }
 
-        public async Task<PaginationList<VehicleMakeEntity>> FindAllMakesPaged(ISortingParameters sortingParams, IFilteringParameters filteringParams,
+        public async Task<PaginationList<IVehicleMakeEntity>> FindAllMakesPaged(ISortingParameters sortingParams, IFilteringParameters filteringParams,
             IPagingParameters pagingParams)
         {
 
@@ -71,13 +70,13 @@ namespace Cars.Repository
             }
         }
 
-        public async Task<PaginationList<VehicleMakeEntity>> Paginate(IPagingParameters page, IQueryable<VehicleMakeEntity> makes)
+        public async Task<PaginationList<IVehicleMakeEntity>> Paginate(IPagingParameters page, IQueryable<IVehicleMakeEntity> makes)
         {
-            var makesPage = await PaginationList<VehicleMakeEntity>.CreateAsync(makes, page.PageNumber, page.PageSize);
+            var makesPage = await PaginationList<IVehicleMakeEntity>.CreateAsync(makes, page.PageNumber, page.PageSize);
 
-            var list = _mapper.Map<List<VehicleMakeEntity>>(makesPage.Items);
+            var list = _mapper.Map<List<IVehicleMakeEntity>>(makesPage.Items);
 
-            var listMakes = new PaginationList<VehicleMakeEntity>(list, makesPage.TotalCount, makesPage.CurrentPage, makesPage.PageSize);
+            var listMakes = new PaginationList<IVehicleMakeEntity>(list, makesPage.TotalCount, makesPage.CurrentPage, makesPage.PageSize);
 
             return listMakes;
         }

@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Cars.Common;
 using Cars.DAL.Entities;
+using Cars.Model;
 using Cars.Model.Common;
 using Cars.Repository.Common;
 using Cars.Service.Common;
@@ -41,13 +42,13 @@ namespace Cars.Service
             await _unitOfWork.CommitAsync();
         }
 
-        public async Task<IVehicleModel> FindVehicleModelById(int id)
+        public async Task<VehicleModelEntity> FindVehicleModelById(int id)
         {
             var model = await _unitOfWork.VehicleModel.FindById(id);
-            var listModel = _mapper.Map<IVehicleModel>(model);
+            var listModel = _mapper.Map<VehicleModelEntity>(model);
             return listModel;
         }
-        public async Task<PaginationList<VehicleModelEntity>> FindAllModelsPaged(ISortingParameters sortingParams, IFilteringParameters filteringParams, IPagingParameters pagingParams)
+        public async Task<PaginationList<IVehicleModelEntity>> FindAllModelsPaged(ISortingParameters sortingParams, IFilteringParameters filteringParams, IPagingParameters pagingParams)
         {
 
             return await _unitOfWork.VehicleModel.FindAllModelsPaged(sortingParams, filteringParams, pagingParams);

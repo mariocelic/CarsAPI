@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using Cars.Common;
-using Cars.DAL.Abstract;
+using Cars.DAL;
 using Cars.DAL.Entities;
 using Cars.Repository.Common;
 using Microsoft.EntityFrameworkCore;
@@ -15,23 +15,20 @@ namespace Cars.Repository
     {
         private readonly IMapper _mapper;
 
-        public VehicleModelRepository(IApplicationDbContext context, IMapper mapper) : base(context)
+        public VehicleModelRepository(ApplicationDbContext context, IMapper mapper) : base(context)
         {
             _context = context;
             _mapper = mapper;
         }
 
 
-        public async Task<VehicleModelEntity> FindWithMakeById(int id)
+        public IQueryable<IVehicleModelEntity> FindWithMakeById(int id)
         {
-            return await _context.Set<VehicleModelEntity>()
-                .AsNoTracking()
-                .Include(q => q.VehicleMake)
-                .FirstOrDefaultAsync(q => q.ModelId == id);
+            return _context.VehicleModels.Where(m => m.MakeId == id);
 
         }
 
-        public async Task<PaginationList<VehicleModelEntity>> FindAllModelsPaged(ISortingParameters sortingParams, IFilteringParameters filteringParams,
+        public async Task<PaginationList<IVehicleModelEntity>> FindAllModelsPaged(ISortingParameters sortingParams, IFilteringParameters filteringParams,
             IPagingParameters pagingParams)
         {
             // Filtering
@@ -73,13 +70,13 @@ namespace Cars.Repository
             }
         }
 
-        public async Task<PaginationList<VehicleModelEntity>> Paginate(IPagingParameters page, IQueryable<VehicleModelEntity> models)
+        public async Task<PaginationList<IVehicleModelEntity>> Paginate(IPagingParameters page, IQueryable<IVehicleModelEntity> models)
         {
-            var modelsPage = await PaginationList<VehicleModelEntity>.CreateAsync(models, page.PageNumber, page.PageSize);
+            var modelsPage = await PaginationList<IVehicleModelEntity>.CreateAsync(models, page.PageNumber, page.PageSize);
 
-            var list = _mapper.Map<List<VehicleModelEntity>>(modelsPage.Items);
+            var list = _mapper.Map<List<IVehicleModelEntity>>(modelsPage.Items);
 
-            var listModels = new PaginationList<VehicleModelEntity>(list, modelsPage.TotalCount, modelsPage.CurrentPage, modelsPage.PageSize);
+            var listModels = new PaginationList<IVehicleModelEntity>(list, modelsPage.TotalCount, modelsPage.CurrentPage, modelsPage.PageSize);
 
             return listModels;
         }

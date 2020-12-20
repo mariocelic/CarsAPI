@@ -5,8 +5,10 @@ namespace Cars.Repository.Common
 {
     public interface IUnitOfWork : IDisposable
     {
-        IVehicleMakeRepository VehicleMake { get; }
-        IVehicleModelRepository VehicleModel { get; }
+        IVehicleMakeRepository VehicleMake { get; set; }
+        IVehicleModelRepository VehicleModel { get; set; }
+
         Task CommitAsync();
+        new void Dispose();
     }
 }

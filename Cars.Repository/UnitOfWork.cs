@@ -1,4 +1,4 @@
-﻿using Cars.DAL.Abstract;
+﻿using Cars.DAL;
 using Cars.Repository.Common;
 using System.Threading.Tasks;
 
@@ -9,9 +9,9 @@ namespace Cars.Repository
         public IVehicleMakeRepository VehicleMake { get; set; }
         public IVehicleModelRepository VehicleModel { get; set; }
 
-        private readonly IApplicationDbContext _context;
+        private readonly ApplicationDbContext _context;
 
-        public UnitOfWork(IVehicleMakeRepository vehicleMake, IVehicleModelRepository vehicleModel, IApplicationDbContext context)
+        public UnitOfWork(IVehicleMakeRepository vehicleMake, IVehicleModelRepository vehicleModel, ApplicationDbContext context)
         {
             VehicleMake = vehicleMake;
             VehicleModel = vehicleModel;

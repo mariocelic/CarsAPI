@@ -7,8 +7,8 @@ namespace Cars.Repository.Common
 {
     public interface IVehicleModelRepository : IAsyncRepositoryBase<VehicleModelEntity>
     {
-        Task<VehicleModelEntity> FindWithMakeById(int id);
-        Task<PaginationList<VehicleModelEntity>> FindAllModelsPaged(ISortingParameters sortingParams, IFilteringParameters filteringParams, IPagingParameters pagingParams);
-        Task<PaginationList<VehicleModelEntity>> Paginate(IPagingParameters page, IQueryable<VehicleModelEntity> models);
+        IQueryable<IVehicleModelEntity> FindWithMakeById(int id);
+        Task<PaginationList<IVehicleModelEntity>> FindAllModelsPaged(ISortingParameters sortingParams, IFilteringParameters filteringParams, IPagingParameters pagingParams);
+        Task<PaginationList<IVehicleModelEntity>> Paginate(IPagingParameters page, IQueryable<IVehicleModelEntity> models);
     }
 }
